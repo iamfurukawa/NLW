@@ -72,8 +72,13 @@ class PointsController {
                 point_id
             };
         });
-    
-        await trx('point_items').insert(pointItems);
+        
+        try {
+            await trx('point_items').insert(pointItems);
+        } catch(e) {
+            trx.rollback();
+            return response.json({ error: "Point not found." });
+        }
 
         await trx.commit();
     
